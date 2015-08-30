@@ -11,7 +11,7 @@ import java.nio.file.Files;
 public class FileSearch {
 	public static void main(String[] args) {
 		if (args.length < 2) {
-			System.out.println("Usage: java Search <fileRegex> <startPath>");
+			System.out.println("Usage: java FileSearch <fileRegex> <startPath>");
 		}
 		else {
 			String startingFile = args[1];
@@ -46,7 +46,7 @@ public class FileSearch {
 	public static List<FileContent> FileLoader(File[] files, String fileRegex, List<FileContent> list){
 		for (File file : files) {
 			if (file.isDirectory()) {
-				return FileLoader(file.listFiles(), fileRegex, list);
+				FileLoader(file.listFiles(), fileRegex, list);
 			} else {
 				if (file.getName().matches(fileRegex)) {
 					FileContent content = new FileContent();
@@ -55,6 +55,7 @@ public class FileSearch {
 					try {
 						content.content = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 						list.add(content);
+						System.out.println("File " + list.size() + " added! " + file.getName());
 					}
 					catch (IOException e) {
 						System.out.println("IO Error while reading file: " + file.getName());
