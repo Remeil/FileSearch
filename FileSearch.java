@@ -36,6 +36,34 @@ public class FileSearch {
 			for (FileContent file : files) {
 				System.out.println(file.filename);
 			}
+			
+			Scanner scan = new Scanner(System.in);
+			String searchRegex;
+			
+			while (true) {
+				System.out.print("\nEnter regex to search for in files (\\\\exit exits): ");
+				searchRegex = scan.nextLine();
+				
+				System.out.println(searchRegex);
+				
+				if (searchRegex.equals("\\\\exit")) {
+					return;
+				}
+				
+				try {
+					Pattern.compile(searchRegex);
+				}
+				catch (PatternSyntaxException e) {
+					System.out.println("Invalid regex");
+					continue;
+				}
+				
+				for (FileContent file : files) {
+					if (file.content.matches(searchRegex)) {
+						System.out.println(file.filename);
+					}
+				}
+			}
 		}
 	}
 	
