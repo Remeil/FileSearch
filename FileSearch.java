@@ -92,22 +92,25 @@ public class FileSearch {
 	}
 	
 	public static List<FileContent> FileLoader(File[] files, Matcher regexMatcher, List<FileContent> list){
-		for (File file : files) {
-			if (file.isDirectory()) {
-				FileLoader(file.listFiles(), regexMatcher, list);
-			} else {
-				regexMatcher.reset(file.getName());
-				if (regexMatcher.find()) {
-					FileContent content = new FileContent();
-					content.filename = file.getName();
-					
-					try {
-						content.content = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
-						list.add(content);
-						if (DEBUG) { System.out.println("File " + list.size() + " added! " + file.getName()); }
-					}
-					catch (IOException e) {
-						System.out.println("IO Error while reading file: " + file.getName());
+		if (files != null && files.length > 0)
+		{
+			for (File file : files) {
+				if (file.isDirectory()) {
+					FileLoader(file.listFiles(), regexMatcher, list);
+				} else {
+					regexMatcher.reset(file.getName());
+					if (regexMatcher.find()) {
+						FileContent content = new FileContent();
+						content.filename = file.getName();
+						
+						try {
+							content.content = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+							list.add(content);
+							if (DEBUG) { System.out.println("File " + list.size() + " added! " + file.getName()); }
+						}
+						catch (IOException e) {
+							System.out.println("IO Error while reading file: " + file.getName());
+						}
 					}
 				}
 			}
