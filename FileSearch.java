@@ -38,7 +38,20 @@ public class FileSearch {
 		}
 		
 		System.out.println("Loading files...");
-		List<FileContent> files = FileLoader(new File[] {new File(startingFile)}, regexMatcher);
+		List<FileContent> files;
+		try { 
+			files = FileLoader(new File[] {new File(startingFile)}, regexMatcher);
+		}
+		catch (OutOfMemoryError e) {
+			files = null;
+			System.out.println("Ran out of memory! Try a more specific search.");
+			return;
+		}
+		catch (Exception e) {
+			System.out.println("Some unknown error occured.");
+			if (DEBUG) { throw e; }
+			else { return; }
+		}
 		System.out.println("Done loading files!");
 		
 		if (files == null || files.size() == 0) { System.out.println("No files to search."); return; }
