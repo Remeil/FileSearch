@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 
 public class FileSearch {
-	final static boolean DEBUG = true;
+	final static boolean DEBUG = false;
 	
 	public static void main(String[] args) {
 		Scanner scan = new Scanner(System.in);
@@ -41,18 +41,19 @@ public class FileSearch {
 		List<FileContent> files = FileLoader(new File[] {new File(startingFile)}, regexMatcher);
 		System.out.println("Done loading files!");
 		
-		if (files == null) { System.out.println("No files to search."); return; }
-		
-		System.out.println("Files loaded: " + files.size());
+		if (files == null || files.size() == 0) { System.out.println("No files to search."); return; }
 		
 		for (FileContent file : files) {
 			System.out.println(file.filename);
-			System.out.println(file.content);
 		}
 		
-		String searchRegex;
+		System.out.println("Files loaded: " + files.size());
+		
 		
 		while (true) {
+			String searchRegex;
+			Matcher searchMatcher;
+			
 			System.out.print("\nEnter regex to search for in files (\\\\exit exits): ");
 			searchRegex = scan.nextLine();
 			
@@ -63,7 +64,8 @@ public class FileSearch {
 			}
 			
 			try {
-				Pattern.compile(searchRegex);
+				Pattern pattern = Pattern.compile(searchRegex);
+				searchMatcher = pattern.matcher("");
 			}
 			catch (PatternSyntaxException e) {
 				System.out.println("Invalid regex");
@@ -71,9 +73,15 @@ public class FileSearch {
 			}
 			
 			for (FileContent file : files) {
-				regexMatcher.reset(file.content);
-				if (regexMatcher.find()) {
+				searchMatcher.reset(file.content);
+				if (searchMatcher.find()) {
 					System.out.println(file.filename);
+					if (DEBUG) { System.out.format("I found the text" +
+                    " \"%s\" starting at " +
+                    "index %d and ending at index %d.%n",
+                    searchMatcher.group(),
+                    searchMatcher.start(),
+                    searchMatcher.end()); }
 				}
 			}
 		}
